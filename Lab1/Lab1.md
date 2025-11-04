@@ -2,13 +2,6 @@
 
 ## Theory
 
-Design patterns are reusable templates that solve common software design problems.
-They make systems easier to understand, maintain, and extend by providing standard approaches to recurring issues.
-
-Sure — here’s a **brief, one-paragraph theoretical description** for each of the six design patterns:
-
----
-
 ### **1. Singleton**
 
 The **Singleton** pattern ensures that a class has only one instance throughout the application and provides a single, global access point to it. It’s commonly used for shared resources like configuration managers, loggers, or database connections. The pattern controls object creation internally, ensuring all code refers to the same instance, which simplifies global state management but can make testing and dependency management more difficult if overused.
