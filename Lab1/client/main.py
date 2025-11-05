@@ -1,62 +1,45 @@
-from domain.models import Config, TripPlanBuilder, TripDirector
-from domain.factory import CarFactory, BikeFactory
+from __future__ import annotations
+from domain.factory import SimplePizzaFactory
+from domain.models import Pizza, OrderBuilder
 
 
-def demo_singleton():
-    print("=== Singleton demo ===")
-    c1 = Config()
-    c2 = Config()
-    print("Config 1:", c1)
-    print("Config 2:", c2)
-    print("Same object?", c1 is c2)
-    # change once, seen everywhere
-    c1.env = "production"
-    print("Config 2 after change:", c2)
-    print()
+def main() -> None:
+    print("=== Design Patterns Demo ===")
+    print("Factory Method, Prototype, Builder\n")
 
+    # Factory Method
+    factory = SimplePizzaFactory()
+    base = factory.create("margherita", size="L")
+    print("[Factory] Created pizza:", base.describe())
 
-def demo_factory_method():
-    print("=== Factory Method demo ===")
-    car_factory = CarFactory()
-    bike_factory = BikeFactory()
+    # Prototype
+    spicy_clone: Pizza = base.clone()
+    spicy_clone.toppings.append("chili flakes")
+    spicy_clone.extra_cheese = True
 
-    car = car_factory.register_and_get_vehicle("Toyota")
-    bike = bike_factory.register_and_get_vehicle("Trek")
+    print("\n[Prototype] Original:", base.describe())
+    print("[Prototype] Clone   :", spicy_clone.describe())
 
-    print(car.move())
-    print(bike.move())
-    print()
-
-
-def demo_builder():
-    print("=== Builder demo ===")
-    builder = TripPlanBuilder()
-    director = TripDirector(builder)
-
-    city_trip = director.build_city_break()
-    beach_trip = director.build_beach_holiday()
-
-    print("City trip:", city_trip)
-    print("Beach trip:", beach_trip)
-
-    # also build manually
-    custom_trip = (
-        builder
-        .set_destination("Chisinau")
-        .set_vehicle("car")
-        .set_hotel("local BnB")
-        .add_activity("winery visit")
-        .add_activity("city center walk")
+    # Builder
+    order = (
+        OrderBuilder("Ava Algorithm")
+        .deliver_to("123 Binary Blvd")
+        .add_pizza(base)
+        .add_pizza(spicy_clone)
+        .with_coupon(10)
+        .with_note("Ring the bell twice")
+        .contactless_delivery(True)
         .build()
     )
-    print("Custom trip:", custom_trip)
-    print()
 
+    print("\n=== Order Summary ===")
+    for p in order.pizzas:
+        print("-", p.describe())
 
-def main():
-    demo_singleton()
-    demo_factory_method()
-    demo_builder()
+    print(f"\nTotal (after coupon): ${order.total()}")
+    print(f"Contactless Delivery: {order.contactless}")
+    if order.note:
+        print(f"Note: {order.note}")
 
 
 if __name__ == "__main__":

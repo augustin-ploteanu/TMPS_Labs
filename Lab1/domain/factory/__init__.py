@@ -1,3 +1,5 @@
-from .vehicle_factory import VehicleFactory, CarFactory, BikeFactory
+from .pizza_factory import SimplePizzaFactory
 
-__all__ = ["VehicleFactory", "CarFactory", "BikeFactory"]
+__all__ = [
+    "SimplePizzaFactory",
+]
