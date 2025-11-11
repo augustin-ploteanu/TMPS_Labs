@@ -18,11 +18,6 @@ class Pizza:
         size_multiplier = {'S': 0.9, 'M': 1.0, 'L': 1.25}[self.size]
         return round((self.base_price + topping_cost + cheese_cost) * size_multiplier, 2)
 
-    # --- Prototype pattern: provide a clone() that returns a deep copy ---
-    def clone(self) -> 'Pizza':
-        """Return a deep-copied clone so nested lists aren't shared."""
-        return deepcopy(self)
-
     def describe(self) -> str:
         toppings = ', '.join(self.toppings) if self.toppings else 'no extra toppings'
         cheese = 'with extra cheese' if self.extra_cheese else 'no extra cheese'

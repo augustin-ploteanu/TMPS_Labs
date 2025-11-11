@@ -1,7 +1,7 @@
 from __future__ import annotations
 from domain.factory import SimplePizzaFactory
 from domain.models import Pizza, OrderBuilder
-
+from domain.models import PrototypeRegistry
 
 def main() -> None:
     print("=== Design Patterns Demo ===")
@@ -13,7 +13,11 @@ def main() -> None:
     print("[Factory] Created pizza:", base.describe())
 
     # Prototype
-    spicy_clone: Pizza = base.clone()
+    registry = PrototypeRegistry()
+    registry.register("base", base)
+
+    # Clone using external prototype object
+    spicy_clone = registry.clone("base")
     spicy_clone.toppings.append("chili flakes")
     spicy_clone.extra_cheese = True
 

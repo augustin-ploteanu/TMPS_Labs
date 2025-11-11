@@ -28,6 +28,11 @@ The **Abstract Factory** pattern provides an interface for creating families of 
 
 ---
 
+Sure — here is the **updated section**, rewritten so that the **Prototype pattern is external** (using a registry instead of `clone()` inside `Pizza`).
+The Factory and Builder sections stay the same — only the Prototype part changes.
+
+---
+
 ## Implementation
 
 ### **1. Factory Method — Creating pizza objects**
@@ -57,40 +62,34 @@ This allows new pizza types to be added by updating the registry instead of rewr
 
 ---
 
-### **2. Prototype — Cloning Pizza Objects**
+### **2. Prototype — Reusing Pizza Templates**
 
-`domain/models/pizza.py`
+`domain/models/prototype.py`
 
 ```python
-from dataclasses import dataclass, field
+from __future__ import annotations
 from copy import deepcopy
-from typing import List
+from typing import Dict
+from .pizza import Pizza
 
-@dataclass
-class Pizza:
-    name: str
-    size: str
-    base_price: float
-    toppings: List[str] = field(default_factory=list)
-    extra_cheese: bool = False
+class PrototypeRegistry:
+    """Stores pizza templates and creates copies when requested."""
+    def __init__(self):
+        self._registry: Dict[str, Pizza] = {}
 
-    def price(self) -> float:
-        topping_cost = 0.75 * len(self.toppings)
-        cheese_cost = 1.25 if self.extra_cheese else 0
-        size_multiplier = {'S': 0.9, 'M': 1.0, 'L': 1.25}[self.size]
-        return round((self.base_price + topping_cost + cheese_cost) * size_multiplier, 2)
+    def register(self, key: str, pizza: Pizza) -> None:
+        self._registry[key.lower()] = pizza
 
-    def clone(self) -> "Pizza":
-        return deepcopy(self)
-
-    def describe(self) -> str:
-        toppings = ", ".join(self.toppings) if self.toppings else "no extra toppings"
-        cheese = "with extra cheese" if self.extra_cheese else "no extra cheese"
-        return f"{self.size}-size {self.name} ({toppings}, {cheese}) -> ${self.price()}"
+    def clone(self, key: str) -> Pizza:
+        try:
+            return deepcopy(self._registry[key.lower()])
+        except KeyError:
+            raise ValueError(f"Unknown prototype: {key}")
 ```
 
-Cloning allows a pizza to be copied and modified without changing the original.
-`deepcopy` ensures the toppings list is not shared.
+A pizza can be registered once and cloned whenever a similar version is needed.
+The cloned pizza can then be customized (for example, adding toppings) without modifying the original.
+Deep copying ensures that lists such as `toppings` are duplicated rather than shared.
 
 ---
 
@@ -157,7 +156,7 @@ class OrderBuilder:
         )
 ```
 
-The builder allows an order to be configured fluently and clearly.
+The Builder allows the client to construct complex `Order` objects in a clear, fluent way.
 
 ---
 
