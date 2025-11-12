@@ -28,11 +28,6 @@ The **Abstract Factory** pattern provides an interface for creating families of 
 
 ---
 
-Sure — here is the **updated section**, rewritten so that the **Prototype pattern is external** (using a registry instead of `clone()` inside `Pizza`).
-The Factory and Builder sections stay the same — only the Prototype part changes.
-
----
-
 ## Implementation
 
 ### **1. Factory Method — Creating pizza objects**
